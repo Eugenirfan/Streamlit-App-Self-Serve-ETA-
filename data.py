@@ -7,20 +7,20 @@ import pyodbc
 import pandas as pd
 
 conn = pyodbc.connect('Driver={ODBC Driver 17 for SQL Server};'
-                      'Server=WPCAN170SQLDW01;'
-                      'Database=SupplyChain;'
+                      'Server=server;'
+                      'Database=Database;'
                       'Trusted_Connection=yes;')
 cursor = conn.cursor()
 
 
 def app():
-    buyer_email = pd.read_excel(r'S:\Matmgmt\Irfan\python projects\Upcoming\Selfserve ETA\Buyer Email.xlsx')
+    buyer_email = pd.read_excel(r'location\.xlsx')
     x = st.text_input("Enter the Item Number: ")
 
-    question = st.text_input(" Do you have a specific Branch Plant? Respond Yes or No ")
+    question = st.text_input(" Do you have a specific Warehouse? Respond Yes or No ")
 
     if question =='Yes':
-        y = st.text_input("Enter the Shipping Branch Plant: ")
+        y = st.text_input("Enter the Shipping Warehouse: ")
         query = (
             "SELECT dwh.PurchaseOrderDetails.ItemNumber, dwh.PurchaseOrderDetails.BranchPlantCode, dwh.PurchaseOrderDetails.StockingStatusCodeBranchPlant, dwh.PurchaseOrderDetails.OrderNumber, dwh.PurchaseOrderDetails.QtyOpenInPurchasingUOM, dwh.PurchaseOrderDetails.PurhasingUOM, dwh.PurchaseOrderDetails.BuyerName, dwh.PurchaseOrderDetails.SupplierName, dwh.PurchaseOrderDetails.IsPOLineComplete, dwh.PurchaseOrderDetails.OrderType, dwh.PurchaseOrderDetails.RequestedDate, dwh.PurchaseOrderDetails.FirstReceiptDate, dwh.PurchaseOrderDetails.ABC1, dwh.PurchaseOrderDetails.ABC3, dwh.InventorySnapshotItemBranch.QtyOnHandInPurchasingUOM, dwh.InventorySnapshotItemBranch.QtyAvailableInPurchasingUOM\n"
             "FROM dwh.PurchaseOrderDetails LEFT JOIN dwh.InventorySnapshotItemBranch ON (dwh.PurchaseOrderDetails.BranchPlantCode = dwh.InventorySnapshotItemBranch.BranchPlantCode) AND (dwh.PurchaseOrderDetails.ItemNumber = dwh.InventorySnapshotItemBranch.ItemNumber)\n"
